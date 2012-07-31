@@ -2,12 +2,12 @@ module Redis::Actions::Saving
   def self.included(base)
     base.class_eval do
       define_model_callbacks :save
-      class_inheritable_array :within_save_blocks
+      class_attribute :within_save_blocks
       self.within_save_blocks ||= []
       extend Redis::Actions::Saving::ClassMethods
     end
   end
-  
+
   def save
     if valid?
       define_id if id.nil?
@@ -29,11 +29,11 @@ module Redis::Actions::Saving
       false
     end
   end
-  
+
   def save!
     raise "Record was not saved: #{errors.full_messages}" unless save
   end
-  
+
   def define_id
     # model_name.to_s is required because model_name is actually an ActiveModel::Name
     # and that can't be serialized by Rubinius. (Worked fine with all other rubies, though...)

@@ -3,11 +3,11 @@ module Redis::Actions::Destroying
     base.class_eval do
       extend Redis::Actions::Destroying::ClassMethods
       define_model_callbacks :destroy
-      class_inheritable_array :within_destroy_blocks
+      class_attribute :within_destroy_blocks
       self.within_destroy_blocks ||= []
     end
   end
-  
+
   def destroy
     unless new_record?
       # run_callbacks(:before_destroy)
@@ -25,12 +25,12 @@ module Redis::Actions::Destroying
       end
     end
   end
-  
+
   module ClassMethods
     def destroy_all
       all.each { |orm| orm.destroy }
     end
-    
+
     def within_destroy_block(method_name = nil, &block)
       within_destroy_blocks << method_name if method_name
       within_destroy_blocks << block       if block_given?
