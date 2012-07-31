@@ -4,7 +4,7 @@ module Redis::Actions::Creating
     base.define_model_callbacks :create
     base.around_save :create_if_new
   end
-  
+
   def create_if_new
     if new_record?
       run_callbacks(:create) do
@@ -14,14 +14,14 @@ module Redis::Actions::Creating
       yield
     end
   end
-  
+
   module ClassMethods
     def create(attributes = {})
       record = new(attributes)
       record.save
       record
     end
-    
+
     def create!(attributes = {})
       record = new(attributes)
       record.save!

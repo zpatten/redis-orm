@@ -5,7 +5,7 @@ module Redis::Actions::Updating
       around_save :update_if_not_new
     end
   end
-  
+
   def update_if_not_new
     if new_record?
       yield

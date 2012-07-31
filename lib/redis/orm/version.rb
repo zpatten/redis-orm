@@ -5,10 +5,10 @@ class Redis
       MINOR = 0
       PATCH = 4
       PREREL = nil
-    
+
       STRING = PREREL ? [MAJOR, MINOR, PATCH, PREREL].join('.') : [MAJOR, MINOR, PATCH].join('.')
     end
-  
+
     VERSION = Version::STRING
   end
 end

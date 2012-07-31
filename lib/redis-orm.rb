@@ -2,7 +2,7 @@ require 'redis'
 
 class Redis
   autoload :ORM, 'redis/orm'
-  
+
   @@connection = nil
   class << self
     def connection

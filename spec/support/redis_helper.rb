@@ -2,9 +2,9 @@ module RedisHelper
   def connection
     @connection ||= Redis.connection
   end
-  
+
   alias redis connection
-  
+
   def self.included(base)
     class << base
       def orm_class(name = "Klass", &block)
@@ -12,7 +12,7 @@ module RedisHelper
       end
     end
   end
-  
+
   def orm_class(name = "Klass", &block)
     @orm_class ||= begin
       klass = Class.new(Redis::ORM)

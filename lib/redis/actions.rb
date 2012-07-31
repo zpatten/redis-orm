@@ -6,7 +6,7 @@ class Redis
     autoload :Updating,   "redis/actions/updating"
     autoload :Creating,   "redis/actions/creating"
     autoload :Timestamps, "redis/actions/timestamps"
-    
+
     def self.included(base)
       base.class_eval do
         include Redis::Actions::Finding

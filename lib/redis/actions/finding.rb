@@ -2,7 +2,7 @@ module Redis::Actions::Finding
   def self.included(base)
     base.send :extend, Redis::ORM::Finding::ClassMethods
   end
-  
+
   module ClassMethods
     def find(id)
       data = connection.get(id)
@@ -16,7 +16,7 @@ module Redis::Actions::Finding
         nil
       end
     end
-  
+
     def all
       connection.hgetall(File.join(model_name, "ids")).collect do |id|
         find(id.first)
