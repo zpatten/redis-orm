@@ -16,16 +16,28 @@ module Redis::Actions::Creating
   end
 
   module ClassMethods
-    def create(attributes = {})
-      record = new(attributes)
-      record.save
-      record
+
+    def create(attributes = {}, options = {}, &block)
+      create_record(attributes, options, &block)
     end
 
-    def create!(attributes = {})
-      record = new(attributes)
-      record.save!
-      record
+    def create!(attributes = {}, options = {}, &block)
+      create_record(attributes, options, true, &block)
     end
+
+  private
+
+    def create_record(attributes, options, raise = false, &block)
+      if attributes.is_a?(Array)
+        attributes.collect{ |attr| create_record(attr, options, raise, &block) }
+      else
+        record = new(attributes)
+        yield(record) if block_given?
+        saved = record.save
+        raise RecordInvalid.new(record) if !saved && raise_error
+        record
+      end
+    end
+
   end
 end
