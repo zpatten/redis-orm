@@ -17,7 +17,8 @@ module Redis::Relations::HasOne
   end
 
   def has_one_relation_id(name)
-    File.join("references", has_one_relations[name][:relation].to_s)
+    #File.join("references", has_one_relations[name][:relation].to_s)
+    "#{self.class.to_s.pluralize.downcase}:references:#{has_one_relations[name][:relation]}"
   end
 
   def save_has_one_references

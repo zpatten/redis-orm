@@ -5,11 +5,9 @@ module Redis::Actions::Finding
 
   module ClassMethods
     def find(id)
-      data = connection.get(id)
+      data = connection.get("#{self.to_s.pluralize.downcase}:#{id}")
       if data
-        klass_name = id.split(/\//)[0]
-        klass = (klass_name.camelize.constantize rescue self)
-        instance = klass.new(serializer.load(data))
+        instance = self.new(serializer.load(data))
         instance.set_unchanged!
         instance
       else
@@ -18,7 +16,7 @@ module Redis::Actions::Finding
     end
 
     def all
-      connection.hgetall(File.join(model_name, "ids")).collect do |id|
+      connection.hgetall("#{self.to_s.pluralize.downcase}:ids").collect do |id|
         find(id.first)
       end
     end

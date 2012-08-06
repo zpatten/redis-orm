@@ -20,7 +20,7 @@ module Redis::Actions::Saving
               block_or_method.call self
             end
           end
-          connection.set(id, serializer.dump(attributes))
+          connection.set("#{self.class.to_s.pluralize.downcase}:#{id}", serializer.dump(attributes))
         end
       end
       set_unchanged!
@@ -37,7 +37,8 @@ module Redis::Actions::Saving
   def define_id
     # model_name.to_s is required because model_name is actually an ActiveModel::Name
     # and that can't be serialized by Rubinius. (Worked fine with all other rubies, though...)
-    self.id = File.join(model_name.to_s, connection.incr("__uniq__").to_s)
+    #self.id = File.join(model_name.to_s, connection.incr("__uniq__").to_s)
+    self.id = connection.incr("#{self.class.to_s.pluralize.downcase}:__uniq__")
   end
 
   module ClassMethods

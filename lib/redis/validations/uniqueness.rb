@@ -1,6 +1,6 @@
 module Redis::Validations::Uniqueness
   def uniqueness_id(attribute_name)
-    File.join(model_name, attribute_name.to_s.pluralize)
+    "#{self.class.to_s.pluralize.downcase}:ids"
   end
 
   def self.included(base)
@@ -17,7 +17,7 @@ module Redis::Validations::Uniqueness
       validate do |record|
         record.unique_fields.each do |name|
           if id_in_use = connection.hget(record.uniqueness_id(name), record.send(name))
-            if id_in_use != record.id
+            if (record.previous_attributes["id"] != record.id) and (id_in_use != record.id)
               record.errors.add(name, "must be unique")
             end
           end
