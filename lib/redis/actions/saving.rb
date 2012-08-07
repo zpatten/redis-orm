@@ -8,7 +8,7 @@ module Redis::Actions::Saving
     end
   end
 
-  def save
+  def save(*)
     if valid?
       define_id if id.nil?
       run_callbacks(:save) do
@@ -38,7 +38,7 @@ module Redis::Actions::Saving
     # model_name.to_s is required because model_name is actually an ActiveModel::Name
     # and that can't be serialized by Rubinius. (Worked fine with all other rubies, though...)
     #self.id = File.join(model_name.to_s, connection.incr("__uniq__").to_s)
-    self.id = connection.incr("#{self.class.to_s.pluralize.downcase}:__uniq__")
+    self.id = connection.incr("#{self.class.to_s.pluralize.downcase}:__uniq__").to_s
   end
 
   module ClassMethods
