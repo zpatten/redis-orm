@@ -1,3 +1,4 @@
+
 class Redis
   class ORM
     module Version
