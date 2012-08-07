@@ -9,11 +9,11 @@ class Redis::ORM
     end
 
     def attributes
-      @attributes ||= model_attributes.dup
+      @attributes ||= model_attributes.clone
     end
 
     def set_unchanged!
-      @previous_attributes = attributes.dup
+      @previous_attributes = attributes.clone
     end
 
     def attribute_names
@@ -29,7 +29,7 @@ class Redis::ORM
     def previous_attributes
       # note we do NOT assign here, this is because #changed?
       # and #new_record? rely on @previous_attributes to be nil
-      @previous_attributes || attributes.dup
+      @previous_attributes || attributes.clone
     end
 
     def new_record?
@@ -38,6 +38,22 @@ class Redis::ORM
 
     def changed?
       new_record? || attributes != @previous_attributes
+    end
+
+    def update_attribute(name, value)
+      name = name.to_s
+      raise ActiveRecordError, "#{name} is marked as readonly" if self.class.readonly_attributes.include?(name)
+      send("#{name}=", value)
+      save(:validate => false)
+    end
+
+    def update_attributes(attributes, options = {})
+      attributes = attributes.is_a?(Array) ? attributes : [attributes]
+      attributes.each do |attributes_group|
+        attributes_group.each do |key, value|
+          update_attribute(key, value)
+        end
+      end
     end
 
     module ClassMethods
