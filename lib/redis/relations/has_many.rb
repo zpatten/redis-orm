@@ -34,7 +34,7 @@ module Redis::Relations::HasMany
 
   def has_many_relation_id(name)
     #File.join("references", has_many_relations[name][:relation].to_s)
-    "#{has_many_relations[name][:relation]}:references:#{self.class.to_s.pluralize.downcase}"
+    "#{has_many_relations[name][:relation].to_s.pluralize}:references:#{self.class.to_s.downcase}"
   end
 
   def self.included(base)

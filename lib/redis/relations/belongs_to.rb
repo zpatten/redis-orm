@@ -18,7 +18,7 @@ module Redis::Relations::BelongsTo
 
   def belongs_to_relation_id(name)
     #File.join("references", belongs_to_relations[name][:relation].to_s)
-    "#{self.class.to_s.pluralize.downcase}:references:#{belongs_to_relations[name][:relation]}"
+    "#{self.class.to_s.pluralize.downcase}:references:#{belongs_to_relations[name][:relation].to_s}"
   end
 
   def save_belongs_to_references
