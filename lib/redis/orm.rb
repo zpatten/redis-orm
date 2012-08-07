@@ -31,11 +31,12 @@ class Redis::ORM
   end
 
   def to_key
-    persisted? ? id : nil
+    persisted? ? [model_name, id] : nil
   end
 
   def to_param
-    persisted? ? File.join(model_name, id) : nil
+    #persisted? ? File.join(model_name, id) : nil
+    persisted? ? id : nil
   end
 
   def persisted?
