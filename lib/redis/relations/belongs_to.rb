@@ -11,22 +11,20 @@ module Redis::Relations::BelongsTo
     if belongs_to_references.key?(name)
       belongs_to_references[name]
     else
-      result = self.class.find(connection.hget(belongs_to_relation_id(name), id))
+      item = connection.zscore(belongs_to_relation_key(name), id.to_i).to_i
+      result = eval("#{name.to_s.capitalize}.find(item)")
       belongs_to_references[name] = result
     end
   end
 
-  def belongs_to_relation_id(name)
-    #File.join("references", belongs_to_relations[name][:relation].to_s)
+  def belongs_to_relation_key(name)
     "#{self.class.to_s.pluralize.downcase}:references:#{belongs_to_relations[name][:relation].to_s}"
   end
 
   def save_belongs_to_references
     belongs_to_references.each do |relation_name, reference|
-      if reference
-        reference = reference.id
-      end
-      connection.hset(belongs_to_relation_id(relation_name), id, reference)
+      reference and (reference = reference.id)
+      connection.zadd(belongs_to_relation_key(relation_name), reference.to_i, id.to_i)
     end
   end
 
