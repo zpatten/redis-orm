@@ -12,7 +12,7 @@ module Redis::Relations::BelongsTo
       belongs_to_references[name]
     else
       item = connection.zscore(belongs_to_relation_key(name), id.to_i).to_i
-      result = eval("#{name.to_s.capitalize}.find(item)")
+      result = name.to_s.classify.constantize.find(item)
       belongs_to_references[name] = result
     end
   end

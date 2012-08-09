@@ -9,6 +9,10 @@ require 'redis/actions'
 class Redis::ORM
   class_attribute :serializer
   self.serializer ||= Marshal
+
+  class_attribute :model_attributes
+  self.model_attributes = HashWithIndifferentAccess.new
+
   delegate :model_name, :to => "self.class"
   delegate :connection, :to => :Redis
 
@@ -28,14 +32,17 @@ class Redis::ORM
 
   class << self
     delegate :connection, :to => :Redis
+
+    def inherited(base)
+      base.model_attributes = self.model_attributes.dup
+    end
   end
 
   def to_key
-    persisted? ? [model_name, id] : nil
+    persisted? ? [model_name.downcase, id] : nil
   end
 
   def to_param
-    #persisted? ? File.join(model_name, id) : nil
     persisted? ? id : nil
   end
 
@@ -51,7 +58,7 @@ class Redis::ORM
   end
 
   def transaction(&block)
-    connection.multi &block
+    connection.multi(&block)
   end
 
   def ==(other)
