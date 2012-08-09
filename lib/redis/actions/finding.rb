@@ -20,5 +20,14 @@ module Redis::Actions::Finding
         find(id.first)
       end
     end
+
+    def first
+      all.first
+    end
+
+    def last
+      all.last
+    end
+
   end
 end

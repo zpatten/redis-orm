@@ -53,6 +53,34 @@ class Redis::ORM
       end
     end
 
+    protected
+
+      def read_attribute(name)
+        @attributes[name]
+      end
+
+      def write_attribute(name, value)
+        @attributes[name] = value
+      end
+
+    private
+
+      def method_missing(method_name, *method_args)
+        method_name = method_name.to_s
+        if method_name =~ /(=|\?)$/
+          case $1
+          when "=" then
+            attributes[$`] = method_args.first
+          when "?" then
+            attributes[$`]
+          end
+        else
+          return attributes[method_name] if attributes.keys.include?(method_name)
+          super
+        end
+
+      end
+
     module ClassMethods
       def attribute_names
         model_attributes.keys
@@ -74,6 +102,7 @@ class Redis::ORM
         end
 
       end
+
     end
 
   end
