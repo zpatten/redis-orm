@@ -39,11 +39,11 @@ class Redis::ORM
   end
 
   def to_key
-    persisted? ? [model_name.downcase, id] : nil
+    [model_name.downcase, id]
   end
 
   def to_param
-    persisted? ? id : nil
+    id
   end
 
   def persisted?
