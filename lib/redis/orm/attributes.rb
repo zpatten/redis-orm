@@ -76,7 +76,7 @@ class Redis::ORM
         end
 
         define_method "#{key}?" do
-          %w( 1 y yes t true ).include?(attributes[key].downcase)
+          %w( 1 y yes t true ).include?(attributes[key].to_s.downcase)
         end
 
         define_method "#{key}=" do |value|
