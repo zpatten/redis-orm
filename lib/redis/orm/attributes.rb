@@ -40,10 +40,8 @@ class Redis::ORM
     end
 
     def update_attribute(name, value)
-      name = name.to_s
-      raise ActiveRecordError, "#{name} is marked as readonly" if self.readonly_attributes.include?(name)
-      send("#{name}=", value)
-      save(:validate => false)
+      send("#{name.to_s}=", value)
+      save
     end
 
     def update_attributes(attribs, options = {})
