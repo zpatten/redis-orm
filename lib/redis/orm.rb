@@ -39,11 +39,11 @@ class Redis::ORM
   end
 
   def to_key
-    [model_name.downcase, id]
+    persisted? ? [model_name.downcase, id] : nil
   end
 
   def to_param
-    id
+    persisted? ? id : nil
   end
 
   def persisted?
@@ -62,6 +62,20 @@ class Redis::ORM
   end
 
   def ==(other)
-    other && id == other.id
+    other.instance_of?(self.class) && id.present? && other.id == id
+  end
+  alias :eql? :==
+
+#  def to_s
+#  end
+#  alias :to_str :to_s
+
+  def inspect
+    inspection = if @attributes
+      @attributes.collect{ |k,v| "#{k}: #{v || "nil"}" }.compact.join(", ")
+    else
+      "not initialized"
+    end
+    "#<#{self.class} #{inspection}>"
   end
 end
