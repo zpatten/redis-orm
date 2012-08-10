@@ -5,7 +5,7 @@ module Redis::Relations::BelongsTo
 
   def set_belongs_to_reference(name, a)
     belongs_to_references[name] = a
-    @attributes.merge!("#{name}_id" => a.id)
+    @attributes.merge!("#{name}_id" => (a.nil? ? a : a.id))
   end
 
   def get_belongs_to_reference(name)
