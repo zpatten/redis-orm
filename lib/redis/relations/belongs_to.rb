@@ -53,6 +53,7 @@ module Redis::Relations::BelongsTo
           define_method "#{relation_name}_id=" do |value|
             if value != attributes["#{relation_name}_id"]
               attributes["#{relation_name}_id"] = value
+              set_belongs_to_reference(relation_name, relation_name.to_s.classify.constantize.find(value))
             else
               value
             end
