@@ -5,6 +5,7 @@ module Redis::Relations::BelongsTo
 
   def set_belongs_to_reference(name, a)
     belongs_to_references[name] = a
+    @attributes.merge!("#{name}_id" => a.id)
   end
 
   def get_belongs_to_reference(name)
@@ -43,6 +44,20 @@ module Redis::Relations::BelongsTo
           define_method "#{relation_name}=" do |a|
             set_belongs_to_reference(relation_name, a)
           end
+
+          self.model_attributes.merge!("#{relation_name}_id" => nil)
+          define_method "#{relation_name}_id" do
+            attributes["#{relation_name}_id"]
+          end
+
+          define_method "#{relation_name}_id=" do |value|
+            if value != attributes["#{relation_name}_id"]
+              attributes["#{relation_name}_id"] = value
+            else
+              value
+            end
+          end
+
         end
       end
     end
