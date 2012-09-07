@@ -16,9 +16,14 @@ module Redis::Actions::Finding
     end
 
     def all
-      connection.hgetall("#{self.to_s.pluralize.downcase}:ids").collect do |id|
-        find(id.first)
+      instances = Array.new
+      record_ids = connection.hgetall("#{self.to_s.pluralize.downcase}:ids").collect{ |id| "#{self.to_s.pluralize.downcase}:#{id.first}" }
+      if (records = connection.mget(record_ids))
+        records.each do |record|
+          instances << self.new(serializer.load(record))
+        end
       end
+      instances
     end
 
     def first
