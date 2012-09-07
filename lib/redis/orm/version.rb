@@ -1,15 +1,6 @@
 
 class Redis
   class ORM
-    module Version
-      MAJOR = 0
-      MINOR = 0
-      PATCH = 4
-      PREREL = nil
-
-      STRING = PREREL ? [MAJOR, MINOR, PATCH, PREREL].join('.') : [MAJOR, MINOR, PATCH].join('.')
-    end
-
-    VERSION = Version::STRING
+    VERSION = "0.0.5" unless const_defined?(:VERSION)
   end
 end
