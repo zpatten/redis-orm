@@ -4,23 +4,30 @@ module Redis::Actions::Finding
   end
 
   module ClassMethods
+
     def find(id)
-      data = connection.get("#{self.to_s.pluralize.downcase}:#{id}")
-      if data
-        instance = self.new(serializer.load(data))
-        instance.set_unchanged!
-        instance
+      record = connection.get("#{self.to_s.pluralize.downcase}:#{id}")
+      if record
+        model = self.new(serializer.load(record))
+        model.set_unchanged!
+        model
       else
         nil
       end
     end
 
-    def all
+    def all(record_ids=nil)
       instances = Array.new
-      record_ids = connection.hgetall("#{self.to_s.pluralize.downcase}:ids").collect{ |id| "#{self.to_s.pluralize.downcase}:#{id.first}" }
+      if record_ids.nil?
+        record_ids = connection.hgetall("#{self.to_s.pluralize.downcase}:ids").collect{ |id| "#{self.to_s.pluralize.downcase}:#{id.first}" }
+      else
+        record_ids = record_ids.collect{ |id| "#{self.to_s.pluralize.downcase}:#{id}" }
+      end
       if (records = connection.mget(record_ids))
         records.each do |record|
-          instances << self.new(serializer.load(record))
+          model = self.new(serializer.load(record))
+          model.set_unchanged!
+          instances << model
         end
       end
       instances

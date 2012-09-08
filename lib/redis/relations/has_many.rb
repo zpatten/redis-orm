@@ -15,7 +15,7 @@ module Redis::Relations::HasMany
       has_many_references[relation_name]
     else
       items = connection.zrange(has_many_relation_id(relation_name), 0, -1, withscores: true).select{ |i| i.last.to_i == id.to_i }.collect{ |i| i.first.to_i }
-      result = items.collect{ |item| relation_name.to_s.classify.constantize.find(item) }
+      result = relation_name.to_s.classify.constantize.all(items) #items.collect{ |item| relation_name.to_s.classify.constantize.find(item) }
       has_many_references[relation_name] = result
     end
   end

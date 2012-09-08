@@ -4,11 +4,12 @@ require 'active_model'
 require 'redis/relations'
 require 'redis/validations'
 require 'redis/orm/attributes'
+require 'redis/orm/serializer'
 require 'redis/actions'
 
 class Redis::ORM
   class_attribute :serializer
-  self.serializer ||= Marshal
+  self.serializer ||= Redis::ORM::Serializer
 
   class_attribute :model_attributes
   self.model_attributes = HashWithIndifferentAccess.new
